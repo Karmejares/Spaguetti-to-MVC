@@ -7,68 +7,146 @@
  * Lee del Modelo (solo lectura) y se suscribe a sus cambios para redibujarse sola.
  * El HTML estático (formulario, tabla, resumen) ya está en index.html: aquí solo se rellena y se escucha.
  */
-
+ 
+// Cómo se PRESENTA cada estado (texto y clase CSS). El estado lo decide el Modelo; la Vista solo lo traduce a pantalla.
+const PRESENTACION_ESTADO = {
+  'aprobado': { clase: 'ok', texto: () => '¡Aprobado! Ya aseguraste la nota mínima.' },
+  'en-camino': { clase: 'en-camino', texto: (n) => `En camino: necesitas ${n} en lo que falta.` },
+  'en-riesgo': { clase: 'riesgo', texto: (n) => `En riesgo: necesitas ${n} en lo que falta.` },
+  'imposible': { clase: 'imposible', texto: () => 'Imposible aprobar con las notas actuales.' },
+};
+ 
+/** Formatea un porcentaje como en la versión espagueti: hasta 2 decimales, seguido de " %". */
+const porcentaje = (n) => `${Math.round(n * 100) / 100} %`;
+ 
 export class NotasVista {
   #modelo;
   #el;
-
+ 
   constructor(raiz, modelo) {
     this.#modelo = modelo;
-    // TODO 3A: busca en `raiz` los elementos que vas a usar (#form, #nombre, #peso, #nota, #error, #tabla,
-    //          #vacio, #acumulado, #pesoCalificado, #pesoPendiente, #necesaria, #estado) y guárdalos en this.#el.
-    //          Luego: suscríbete al Modelo para redibujarte sola y dibuja una primera vez.
+ 
+    // 3A · Los elementos que la Vista usa (todos vienen de index.html).
+    const buscar = (id) => raiz.querySelector(`#${id}`);
+    this.#el = {
+      form: buscar('form'),
+      nombre: buscar('nombre'),
+      peso: buscar('peso'),
+      nota: buscar('nota'),
+      error: buscar('error'),
+      tabla: buscar('tabla'),
+      vacio: buscar('vacio'),
+      acumulado: buscar('acumulado'),
+      pesoCalificado: buscar('pesoCalificado'),
+      pesoPendiente: buscar('pesoPendiente'),
+      necesaria: buscar('necesaria'),
+      estado: buscar('estado'),
+    };
+ 
+    // Observer: cada vez que el Modelo cambie, la Vista se redibuja sola.
+    this.#modelo.suscribir(() => this.render());
+    this.render();
   }
-
+ 
   // ---------------------------------------------------------- 3B · Eventos que la Vista ofrece
   // El Controlador se registra aquí. La Vista no decide qué hacer: solo avisa "el usuario hizo esto".
-
+ 
   alAgregar(manejador) {
-    // TODO 3B: cuando se envíe el formulario (submit, sin recargar la página) llama a manejador(this.leerFormulario()).
+    this.#el.form.addEventListener('submit', (evento) => {
+      evento.preventDefault(); // sin recargar la página
+      manejador(this.leerFormulario());
+    });
   }
-
-  // EJEMPLO RESUELTO (para que hagas alAgregar y alCalificar igual): un solo escuchador en la tabla
-  // sirve para todas las filas (delegación de eventos); el id viaja en el atributo data-eliminar.
-  // Funciona cuando termines 3A (this.#el.tabla) y 3D (los botones "Eliminar" con data-eliminar).
+ 
+  // EJEMPLO RESUELTO: un solo escuchador en la tabla sirve para todas las filas (delegación de eventos).
   alEliminar(manejador) {
     this.#el.tabla.addEventListener('click', (evento) => {
       const boton = evento.target.closest('button[data-eliminar]');
       if (boton) manejador(Number(boton.dataset.eliminar));
     });
   }
-
+ 
   alCalificar(manejador) {
-    // TODO 3B: cuando cambie una nota de la tabla, llama a manejador(id, textoEscrito).
-    //          Pista: igual que alEliminar, pero con el evento "change" y el id guardado en data-nota
-    //          (el <input> de la nota; textoEscrito es su .value).
+    this.#el.tabla.addEventListener('change', (evento) => {
+      const campo = evento.target.closest('input[data-nota]');
+      if (campo) manejador(Number(campo.dataset.nota), campo.value);
+    });
   }
-
+ 
   // ---------------------------------------------------------- 3C · Órdenes que la Vista obedece
-
+ 
   leerFormulario() {
-    // TODO 3C: devuelve { nombre, peso, nota } con lo que el usuario escribió, TAL CUAL (texto).
+    return {
+      nombre: this.#el.nombre.value,
+      peso: this.#el.peso.value,
+      nota: this.#el.nota.value,
+    };
   }
-
+ 
   limpiarFormulario() {
-    // TODO 3C: vacía los tres campos.
+    this.#el.form.reset();
   }
-
+ 
   mostrarError(mensaje) {
-    // TODO 3C: muestra el mensaje en #error.
+    this.#el.error.textContent = mensaje;
   }
-
+ 
   limpiarError() {
-    // TODO 3C: borra el mensaje de #error.
+    this.#el.error.textContent = '';
   }
-
+ 
   // ---------------------------------------------------------- 3D · Dibujar
-
+ 
   /** Dibuja TODO a partir del Modelo. No decide nada: solo presenta. */
   render() {
-    // TODO 3D: lee this.#modelo.evaluaciones y this.#modelo.resumen() y actualiza la tabla y el resumen.
-    //          · Tabla: una fila por evaluación (nombre, peso, un <input> con la nota, aporte, botón Eliminar).
-    //            Usa textContent/createElement: el nombre lo escribió el usuario y NO debe interpretarse como HTML.
-    //          · #vacio solo se ve si no hay evaluaciones.
-    //          · Resumen: acumulado (2 decimales), pesos con " %", nota necesaria (o "—"), y #estado con su texto y clase
-    //            (ok / en-camino / riesgo / imposible). Los textos exactos están en la guía y en espagueti.html.
+    const evaluaciones = this.#modelo.evaluaciones;
+    const r = this.#modelo.resumen();
+ 
+    // Tabla: una fila por evaluación, armada con createElement/textContent (nunca innerHTML con datos del usuario).
+    this.#el.tabla.replaceChildren(...evaluaciones.map((e) => this.#fila(e)));
+    this.#el.vacio.hidden = evaluaciones.length > 0;
+ 
+    // Resumen
+    this.#el.acumulado.textContent = r.acumulado.toFixed(2);
+    this.#el.pesoCalificado.textContent = porcentaje(r.pesoCalificado);
+    this.#el.pesoPendiente.textContent = porcentaje(r.pesoPendiente);
+    const necesaria = r.notaNecesaria === null ? '—' : r.notaNecesaria.toFixed(2);
+    this.#el.necesaria.textContent = necesaria;
+ 
+    const { clase, texto } = PRESENTACION_ESTADO[r.estado];
+    this.#el.estado.textContent = texto(necesaria);
+    this.#el.estado.className = `estado ${clase}`;
+  }
+ 
+  /** Crea la fila <tr> de una evaluación. */
+  #fila(e) {
+    const tr = document.createElement('tr');
+ 
+    const celda = (contenido) => {
+      const td = document.createElement('td');
+      if (typeof contenido === 'string') td.textContent = contenido;
+      else td.append(contenido);
+      tr.append(td);
+    };
+ 
+    const campoNota = document.createElement('input');
+    campoNota.type = 'number';
+    campoNota.step = 'any';
+    campoNota.value = e.nota === null ? '' : String(e.nota);
+    campoNota.dataset.nota = String(e.id);
+    campoNota.setAttribute('aria-label', `Nota de ${e.nombre}`);
+ 
+    const botonEliminar = document.createElement('button');
+    botonEliminar.type = 'button';
+    botonEliminar.textContent = 'Eliminar';
+    botonEliminar.dataset.eliminar = String(e.id);
+ 
+    celda(e.nombre); // textContent: si escriben <b>hola</b>, se ve tal cual y no se interpreta
+    celda(`${e.peso} %`);
+    celda(campoNota);
+    celda(e.nota === null ? '—' : ((e.peso * e.nota) / 100).toFixed(2));
+    celda(botonEliminar);
+ 
+    return tr;
   }
 }
