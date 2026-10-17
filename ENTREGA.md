@@ -1,8 +1,8 @@
 # Entrega · Laboratorio MVC · Notas del semestre
 
 **Equipo:** ______________________  
-**Integrantes:** Juan Esteban Escobar____________________
-**Repositorio:** https://github.com/Karmejares/Spaguetti-to-MVC/blob/main/ENTREGA.md____________________
+**Integrantes:** Juan Esteban Escobar
+**Repositorio:** https://github.com/Karmejares/Spaguetti-to-MVC/blob/main/ENTREGA.md
 
 > Completa este archivo a medida que avanzas (cada sección dice en qué parte de la guía se llena).
 > Escribe con tus palabras: las respuestas copiadas de la guía o de otro equipo no cuentan.
