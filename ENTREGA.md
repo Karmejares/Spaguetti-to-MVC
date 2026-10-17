@@ -74,7 +74,7 @@ La idea: **cada cambio debía tocar solo las piezas que le corresponden**.
 
 | Cambio | Archivos que tocaste | ¿Era lo esperado? ¿Por qué? |
 |---|---|---|
-| 5A · Nombres únicos |src/modelo.js | 5 ++++- | |
+| 5A · Nombres únicos |src/modelo.js  5 ++++- | |
 | 5B · Segunda vista (termómetro) | | |
 | 5C · Otro almacén | | |
 
