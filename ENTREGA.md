@@ -78,11 +78,15 @@ La idea: **cada cambio debía tocar solo las piezas que le corresponden**.
  src/termometro-vista.js | 41 +++++++++++++++++++++++++++++++++++++++++
  2 files changed, 44 insertions(+)
 
+5C: src/almacen.js | 19 +++++++++++++++++++
+ src/main.js    |  4 +++-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
+
 | Cambio | Archivos que tocaste | ¿Era lo esperado? ¿Por qué? |
 |---|---|---|
-| 5A · Nombres únicos |src/modelo.js| |
-| 5B · Segunda vista (termómetro) |  src/main.js,  src/termometro-vista.js | |
-| 5C · Otro almacén | | |
+| 5A · Nombres únicos |src/modelo.js|	Sí. Es una regla de negocio y las reglas viven solo en el Modelo. Vista y Controlador ya muestran cualquier ErrorDeReglas. |
+| 5B · Segunda vista (termómetro) |  src/main.js,  src/termometro-vista.js | Sí. Una nueva forma de mostrar es una Vista nueva, y main.js es donde se conectan las piezas. El Modelo no cambió porque avisa por Observer sin saber quién escucha.|
+| 5C · Otro almacén | src/almacen.js, src/main.js  |Sí. Dónde se guarda es cosa del almacén, y main.js elige cuál usar. El Modelo solo exige cargar() y guardar(). |
 
 ## 6. Reflexión (Parte 6)
 
