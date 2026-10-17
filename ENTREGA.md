@@ -1,6 +1,6 @@
 # Entrega · Laboratorio MVC · Notas del semestre
 
-**Equipo:** ______________________  
+**Equipo:** **********\_\_**********  
 **Integrantes:** Juan Esteban Escobar
 **Repositorio:** https://github.com/Karmejares/Spaguetti-to-MVC/blob/main/ENTREGA.md
 
@@ -14,33 +14,33 @@
 Clasifica cada fragmento de `espagueti.html`: **M** (Modelo), **V** (Vista), **C** (Controlador) o **Mezcla**
 (en ese caso, escribe qué roles se mezclan). En "¿Por qué?" justifica en una frase.
 
-| # | Fragmento | Rol(es) | ¿Por qué? |
-|---|---|---|---|
-| 1 | `var n = document.getElementById('nombre').value.trim();` | V |Lee lo que el usuario escribió en la pantalla. En MVC es leerFormulario() de la Vista |
-| 2 | `if (isNaN(p) \|\| p < 1 \|\| p > 100) { err.textContent = 'El peso debe estar entre 1 y 100.'; return; }` | M+V|La regla del peso (R3) está pegada a escribir el mensaje en el DOM |
-| 3 | `if (total + p > 100) { err.textContent = '...'; return; }` | M+V| La regla de la suma de pesos (R5) se decide y se muestra en la misma línea|
-| 4 | `evals.push({ id: sig++, nombre: n, peso: p, nota: nota });` |M | Crea el dato y asigna su id: es estado del negocio|
-| 5 | `localStorage.setItem('notas.v1', JSON.stringify(evals));` | M| Es persistencia, no tiene que ver con la pantalla. En MVC queda detrás del contrato cargar() y guardar()|
-| 6 | `document.getElementById('nombre').value = '';` | V| Solo cambia la pantalla. En MVC es limpiarFormulario(), y el Controlador decide cuándo llamarlo|
-| 7 | `'<input ... onchange="ponerNota(' + e.id + ', this.value)">'` |C+V |Arma HTML con texto (V) y deja atado el evento dentro del HTML (C) |
-| 8 | `nec = Math.ceil(nec * 100 - 1e-9) / 100;` |M | Es cálculo del negocio (nota necesaria redondeada hacia arriba)|
-| 9 | `if (acum + 1e-9 >= 3.0) { txt = '¡Aprobado! ...'; cls = 'ok'; }` |M+V |La regla de aprobar y el texto y la clase CSS están juntos |
-| 10 | `document.getElementById('tabla').innerHTML = filas;` |V |Dibuja la tabla |
-| 11 | `function borrar(id) { ...splice...; localStorage.setItem(...); pintar(); }` |M+V | Reacciona al clic, cambia los datos, guarda y redibuja, todo en una función|
-| 12 | `(e.peso * e.nota / 100).toFixed(2)` | V| Es un valor derivado que se formatea para mostrar. En la guía, el aporte lo calcula la Vista|
+| #   | Fragmento                                                                                                  | Rol(es) | ¿Por qué?                                                                                                |
+| --- | ---------------------------------------------------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------- |
+| 1   | `var n = document.getElementById('nombre').value.trim();`                                                  | V       | Lee lo que el usuario escribió en la pantalla. En MVC es leerFormulario() de la Vista                    |
+| 2   | `if (isNaN(p) \|\| p < 1 \|\| p > 100) { err.textContent = 'El peso debe estar entre 1 y 100.'; return; }` | M+V     | La regla del peso (R3) está pegada a escribir el mensaje en el DOM                                       |
+| 3   | `if (total + p > 100) { err.textContent = '...'; return; }`                                                | M+V     | La regla de la suma de pesos (R5) se decide y se muestra en la misma línea                               |
+| 4   | `evals.push({ id: sig++, nombre: n, peso: p, nota: nota });`                                               | M       | Crea el dato y asigna su id: es estado del negocio                                                       |
+| 5   | `localStorage.setItem('notas.v1', JSON.stringify(evals));`                                                 | M       | Es persistencia, no tiene que ver con la pantalla. En MVC queda detrás del contrato cargar() y guardar() |
+| 6   | `document.getElementById('nombre').value = '';`                                                            | V       | Solo cambia la pantalla. En MVC es limpiarFormulario(), y el Controlador decide cuándo llamarlo          |
+| 7   | `'<input ... onchange="ponerNota(' + e.id + ', this.value)">'`                                             | C+V     | Arma HTML con texto (V) y deja atado el evento dentro del HTML (C)                                       |
+| 8   | `nec = Math.ceil(nec * 100 - 1e-9) / 100;`                                                                 | M       | Es cálculo del negocio (nota necesaria redondeada hacia arriba)                                          |
+| 9   | `if (acum + 1e-9 >= 3.0) { txt = '¡Aprobado! ...'; cls = 'ok'; }`                                          | M+V     | La regla de aprobar y el texto y la clase CSS están juntos                                               |
+| 10  | `document.getElementById('tabla').innerHTML = filas;`                                                      | V       | Dibuja la tabla                                                                                          |
+| 11  | `function borrar(id) { ...splice...; localStorage.setItem(...); pintar(); }`                               | M+V     | Reacciona al clic, cambia los datos, guarda y redibuja, todo en una función                              |
+| 12  | `(e.peso * e.nota / 100).toFixed(2)`                                                                       | V       | Es un valor derivado que se formatea para mostrar. En la guía, el aporte lo calcula la Vista             |
 
 ## 2. Olores del espagueti (Parte 1)
 
 Lista **al menos 5** problemas de diseño de `espagueti.html`. Para cada uno, escribe qué consecuencia tiene
 cuando el proyecto crece y en qué pieza de MVC viviría la solución.
 
-| Olor | Consecuencia | Dónde se arregla (M, V o C) |
-|---|---|---|
-| Es un valor derivado que se formatea para mostrar. En la guía, el aporte lo calcula la Vista| Cualquier función puede cambiar los datos sin control, y es difícil seguir quién los modificó | M (estado privado en NotasModelo)|
-| Una misma regla escrita en más de un lugar (por ejemplo, la validación de la nota)| Si cambia la regla, hay que acordarse de editar todos los sitios y es fácil olvidar uno| M (un solo método de validación)|
-| Valores «mágicos» repetidos (3.0, 1e-9)| Cambiar la nota mínima obliga a buscar y editar varios lugares| M (constantes NOTA_MINIMA y EPS)|
-| HTML armado con texto e innerHTML| Un nombre como <b>hola</b> se interpreta como HTML y abre la puerta a inyección de código| V (createElement y textContent)|
-| Funciones que hacen varias cosas a la vez (como borrar)| Cuesta leerlas, probarlas y reutilizarlas| Repartir entre C (reacciona), M (cambia datos) y V (dibuja)|
+| Olor                                                                                         | Consecuencia                                                                                  | Dónde se arregla (M, V o C)                                 |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Es un valor derivado que se formatea para mostrar. En la guía, el aporte lo calcula la Vista | Cualquier función puede cambiar los datos sin control, y es difícil seguir quién los modificó | M (estado privado en NotasModelo)                           |
+| Una misma regla escrita en más de un lugar (por ejemplo, la validación de la nota)           | Si cambia la regla, hay que acordarse de editar todos los sitios y es fácil olvidar uno       | M (un solo método de validación)                            |
+| Valores «mágicos» repetidos (3.0, 1e-9)                                                      | Cambiar la nota mínima obliga a buscar y editar varios lugares                                | M (constantes NOTA_MINIMA y EPS)                            |
+| HTML armado con texto e innerHTML                                                            | Un nombre como <b>hola</b> se interpreta como HTML y abre la puerta a inyección de código     | V (createElement y textContent)                             |
+| Funciones que hacen varias cosas a la vez (como borrar)                                      | Cuesta leerlas, probarlas y reutilizarlas                                                     | Repartir entre C (reacciona), M (cambia datos) y V (dibuja) |
 
 ## 3. El flujo de «agregar una evaluación» (Parte 6)
 
@@ -72,26 +72,31 @@ Dibuja (a mano y pega una foto, o con texto/Mermaid) el recorrido completo desde
 Después de cada cambio ejecuta `git diff --stat HEAD~1` (o `git show --stat`) y pega el resultado.
 La idea: **cada cambio debía tocar solo las piezas que le corresponden**.
 5A: src/modelo.js | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+1 file changed, 4 insertions(+), 1 deletion(-)
 
-5B:  src/main.js             |  3 +++
- src/termometro-vista.js | 41 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 44 insertions(+)
+5B: src/main.js | 3 +++
+src/termometro-vista.js | 41 +++++++++++++++++++++++++++++++++++++++++
+2 files changed, 44 insertions(+)
 
 5C: src/almacen.js | 19 +++++++++++++++++++
- src/main.js    |  4 +++-
- 2 files changed, 22 insertions(+), 1 deletion(-)
+src/main.js | 4 +++-
+2 files changed, 22 insertions(+), 1 deletion(-)
 
-| Cambio | Archivos que tocaste | ¿Era lo esperado? ¿Por qué? |
-|---|---|---|
-| 5A · Nombres únicos |src/modelo.js|	Sí. Es una regla de negocio y las reglas viven solo en el Modelo. Vista y Controlador ya muestran cualquier ErrorDeReglas. |
-| 5B · Segunda vista (termómetro) |  src/main.js,  src/termometro-vista.js | Sí. Una nueva forma de mostrar es una Vista nueva, y main.js es donde se conectan las piezas. El Modelo no cambió porque avisa por Observer sin saber quién escucha.|
-| 5C · Otro almacén | src/almacen.js, src/main.js  |Sí. Dónde se guarda es cosa del almacén, y main.js elige cuál usar. El Modelo solo exige cargar() y guardar(). |
+| Cambio                          | Archivos que tocaste                 | ¿Era lo esperado? ¿Por qué?                                                                                                                                          |
+| ------------------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 5A · Nombres únicos             | src/modelo.js                        | Sí. Es una regla de negocio y las reglas viven solo en el Modelo. Vista y Controlador ya muestran cualquier ErrorDeReglas.                                           |
+| 5B · Segunda vista (termómetro) | src/main.js, src/termometro-vista.js | Sí. Una nueva forma de mostrar es una Vista nueva, y main.js es donde se conectan las piezas. El Modelo no cambió porque avisa por Observer sin saber quién escucha. |
+| 5C · Otro almacén               | src/almacen.js, src/main.js          | Sí. Dónde se guarda es cosa del almacén, y main.js elige cuál usar. El Modelo solo exige cargar() y guardar().                                                       |
 
 ## 6. Reflexión (Parte 6)
 
 1. En la versión espagueti, ¿qué tuviste que leer o tocar para entender dónde se decide si el estudiante aprobó? ¿Y en la versión MVC?
+   En el espagueti, cuando se pone el condicional if (acum + 1e-9 >= 3.0) { txt = '¡Aprobado! Ya aseguraste la nota mínima.'; cls = 'ok'; } qye evalua el resultado de acum para determinar si aprobo el curso. En modelo MVC se decide por la condicion if (acumulado + EPS >= NOTA_MINIMA) estado = "aprobado", que luego de le pasa a la vista y const { clase, texto } = PRESENTACION_ESTADO[r.estado]; pinta el resultado ;
 2. ¿Por qué el Modelo **no** debe llamar a `alert()` ni a `document`? ¿Qué pasaría con las pruebas del Modelo si lo hiciera?
+   La prueba falla, debido a que el modelo no interactua con el DOM
 3. El Modelo avisa de sus cambios sin saber quién escucha (Observer). ¿Qué ganamos con eso frente a que el Modelo llame directamente a `vista.render()`?
+   Que puedo tener integraciones independientes en la vista que se subscriban a los listener. Asi no tengo que tocar el modelo si necesito renderizar otra cosa
 4. Elige un olor de MVC (controlador gordo, lógica en la Vista, Modelo que toca la pantalla, Modelo anémico) que te hubiera sido fácil cometer hoy. ¿Cuál y cómo lo evitaron?
+   Sinceramente la guia estaba muy bien explicada y pudimos dividir bien las responsabilidades de cada uno de los elementos
 5. ¿Para qué tipo de aplicación **no** usarías MVC? Justifica con lo que viste en el laboratorio.
+   Un proyecto pequeño, o un MVP donde solo necesite dividir las responsabilidades del modelo, la vista, y la interaccion con el usuario.
