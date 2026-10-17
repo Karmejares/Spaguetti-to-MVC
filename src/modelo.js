@@ -57,7 +57,10 @@ export class NotasModelo {
       throw new ErrorDeReglas("El nombre es obligatorio.");
     if (nombreLimpio.length > MAX_NOMBRE)
       throw new ErrorDeReglas("El nombre no puede superar 40 caracteres.");
-
+    // 5A · nombre único (sin importar mayúsculas ni espacios de los extremos)
+    const clave = nombreLimpio.toLowerCase();
+    if (this.#evaluaciones.some((e) => e.nombre.trim().toLowerCase() === clave))
+      throw new ErrorDeReglas("Ya existe una evaluación con ese nombre.");
 
     // R3 · peso
     const pesoNum = typeof peso === "number" ? peso : parseFloat(peso);
