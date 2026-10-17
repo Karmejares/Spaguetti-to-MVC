@@ -65,7 +65,7 @@ Dibuja (a mano y pega una foto, o con texto/Mermaid) el recorrido completo desde
 
 ```
 
-**Captura de pantalla** de la app con las dos vistas (la tabla/resumen y el termómetro): ![alt text](image.png)
+**Captura de pantalla** de la app con las dos vistas (la tabla/resumen y el termómetro): !![alt text](image.png)
 
 ## 5. Tres cambios, tres lugares (Parte 5)
 
@@ -74,7 +74,7 @@ La idea: **cada cambio debía tocar solo las piezas que le corresponden**.
 
 | Cambio | Archivos que tocaste | ¿Era lo esperado? ¿Por qué? |
 |---|---|---|
-| 5A · Nombres únicos | | |
+| 5A · Nombres únicos |src/modelo.js | 5 ++++- | |
 | 5B · Segunda vista (termómetro) | | |
 | 5C · Otro almacén | | |
 
