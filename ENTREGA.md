@@ -55,14 +55,14 @@ Dibuja (a mano y pega una foto, o con texto/Mermaid) el recorrido completo desde
 
 **Salida de `npm test`** (pega el final, donde dice cuántas pruebas pasan):
 
-```✓ 54 de 54 pruebas pasan.
-
+```
+✓ 54 de 54 pruebas pasan.
 ```
 
 **Salida de `npm run arquitectura`:**
 
-```15 de 15 pruebas pasan.
-
+```
+15 de 15 pruebas pasan.
 ```
 
 **Captura de pantalla** de la app con las dos vistas (la tabla/resumen y el termómetro): !![alt text](image.png)
