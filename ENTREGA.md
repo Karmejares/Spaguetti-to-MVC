@@ -71,6 +71,12 @@ Dibuja (a mano y pega una foto, o con texto/Mermaid) el recorrido completo desde
 
 Después de cada cambio ejecuta `git diff --stat HEAD~1` (o `git show --stat`) y pega el resultado.
 La idea: **cada cambio debía tocar solo las piezas que le corresponden**.
+5A: src/modelo.js | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+5B:  src/main.js             |  3 +++
+ src/termometro-vista.js | 41 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 44 insertions(+)
 
 | Cambio | Archivos que tocaste | ¿Era lo esperado? ¿Por qué? |
 |---|---|---|

@@ -4,7 +4,6 @@ import { NotasModelo } from './modelo.js';
 import { NotasVista } from './vista.js';
 import { NotasControlador } from './controlador.js';
 import { TermometroVista } from './termometro-vista.js';
-import { AlmacenSesion } from './almacen.js';
 
 
 
