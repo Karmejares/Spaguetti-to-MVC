@@ -48,7 +48,62 @@ Dibuja (a mano y pega una foto, o con texto/Mermaid) el recorrido completo desde
 **Agregar** hasta que ve la fila nueva en la tabla. Marca en cada paso **el archivo y el método** que actúa.
 
 ```text
-(tu diagrama aquí)
+USUARIO escribe nombre, peso y nota, y presiona «Agregar»
+   │
+   ▼
+① index.html · <form id="form">
+   El navegador dispara el evento "submit" del formulario.
+   │
+   ▼
+② src/vista.js · NotasVista.alAgregar()  (el escuchador de "submit")
+   evento.preventDefault()  → la página no se recarga
+   this.leerFormulario()    → { nombre, peso, nota } como TEXTO
+   Llama al manejador que registró el Controlador.
+   │
+   ▼
+③ src/controlador.js · NotasControlador (manejador de alAgregar, registrado en el constructor)
+   Convierte el texto: peso → número; nota vacía '' → null.
+   Ejecuta la orden con #intentar(() => modelo.agregar(datos)).
+   │
+   ▼
+④ src/modelo.js · NotasModelo.agregar()
+   Valida en orden: nombre (R1, R2, único), peso (R3), nota (R4) y suma de pesos (R5).
+   │
+   ├── ✗ Falla una regla → lanza ErrorDeReglas
+   │      └─► src/controlador.js · #intentar() lo atrapa
+   │            vista.mostrarError(mensaje) → el mensaje aparece en #error
+   │            vista.render()               → el formulario conserva lo escrito
+   │            (FIN: no se guarda nada)
+   │
+   └── ✓ Todo bien → push({ id, nombre, peso, nota }) y llama a this.#cambio()
+          │
+          ▼
+⑤ src/modelo.js · NotasModelo.#cambio()
+   this.#almacen.guardar(this.evaluaciones)
+          │
+          ▼
+⑥ src/almacen.js · AlmacenSesion.guardar()
+   sessionStorage.setItem('notas.v1', ...)   (antes de la 5C: AlmacenLocal → localStorage)
+          │
+          ▼
+⑦ src/modelo.js · NotasModelo.#cambio()  →  avisa a todos los suscriptores (Observer)
+          │
+          ├─────────────────────────────────────┐
+          ▼                                     ▼
+⑧ src/vista.js · NotasVista.render()       ⑨ src/termometro-vista.js · TermometroVista.render()
+   Lee modelo.evaluaciones y                  Lee modelo.resumen().
+   modelo.resumen().                          Llena la barra según el acumulado
+   #fila(e) crea cada <tr> con                y actualiza la leyenda.
+   createElement / textContent.
+   Actualiza el resumen y #estado.
+          │
+          ▼
+⑩ src/controlador.js · #intentar()  (la orden salió bien)
+   vista.limpiarError()       → borra #error
+   vista.limpiarFormulario()  → vacía los tres campos
+          │
+          ▼
+USUARIO ve la fila nueva en la tabla, el resumen actualizado y el termómetro movido
 ```
 
 ## 4. Evidencias (Partes 2, 3, 4 y 6)
